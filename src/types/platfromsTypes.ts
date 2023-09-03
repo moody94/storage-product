@@ -24,14 +24,10 @@ export type FormState = {
   productType: FormField;
   isFormValid: boolean;
 };
-// represent the types of the dispatch
-export type UpdateFormAction = {
-  type: typeof UPDATE_FORM;
-  payload: {
-    name: string;
-    value: string;
-    hasError: boolean;
-    error: string;
-    isFormValid: boolean;
-  };
-};
+
+export type UpdateStateWithValidationFunction = (
+  name: keyof FormState,
+  value: string,
+  mode: boolean,
+  isIntegrated: boolean
+) => void;

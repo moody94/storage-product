@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, createContext } from "react";
 import { DownloadIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import {
@@ -13,50 +13,50 @@ import {
   FormLabel,
 } from "@chakra-ui/react";
 import validateInput from "../utils/validateInput";
-// import { onInputChange } from "../utils/formutils";
-import formReducer from "../reducers/formReducer";
-import {
-  UPDATE_FORM,
-  FormState,
-  FormField,
-  UpdateFormAction,
-} from "../types/platfromsTypes";
+import { FormState, FormField } from "../types/platfromsTypes";
 export const addproduct = "/addproduct";
-import ProductsFormContext, { initialState } from "../utils/productsFormContext";
+
+import {
+  initialState,
+  ProductsFormContext,
+  ProductsFormContextType,
+} from "../utils/ProductsFormContextPage";
 
 const AddProduct = () => {
   const navigate = useNavigate();
-  const { state, updateStateWithValidation, setState } = useContext(ProductsFormContext);
-  // const ProductFromContex = createContext();
-  // used like usestate but for many states
-  // const [state, dispatch] = useReducer(formReducer, initialState);
+  const { state, updateStateWithValidation, setState } =
+    useContext<ProductsFormContextType>(ProductsFormContext);
+
   const [showError, setShowError] = useState(false);
 
+  // the function that add an item if there are all the inputs is valid
   const setProductInfo = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault(); //prevents the form from submitting
+
     let isFormValid = true;
     // loop throw the for loop after i fill it with new values
     // this loop to get the error setuation and the error name from the validate input page
     for (const name in state) {
       const item = state[name as keyof FormState];
       const { value } = item as FormField;
-      // ?????????
-      const { hasError, error } = validateInput(
+      // to get status of error is there is a one or not
+      const { hasError } = validateInput(
         name,
         value,
         false,
         state.productType.value === "Integrated"
       );
-
-      console.log('state', state)
       if (hasError) {
         isFormValid = false;
       }
     }
+
     if (!isFormValid) {
       setShowError(true);
     } else {
-      setState(initialState) /// check this line if editproduct behaves wierdly
+      setState(initialState);
+
+      // the storage is object the key is productname and the value is object from type and price
       localStorage.setItem(
         state.productName.value,
         JSON.stringify({
@@ -67,13 +67,19 @@ const AddProduct = () => {
       navigate("/");
     }
 
-    // Hide the error message after 5 seconds
     setTimeout(() => {
       setShowError(false);
     }, 5000);
   };
+
+  // the Onchages funtions
   const ProductNameHandlar = (e: React.ChangeEvent<HTMLInputElement>) =>
-    updateStateWithValidation("productName", e.target.value, false, state.productType.value === "Integrated");
+    updateStateWithValidation(
+      "productName",
+      e.target.value,
+      false,
+      state.productType.value === "Integrated"
+    );
 
   const ProductPriceHandlar = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateStateWithValidation(
@@ -85,19 +91,29 @@ const AddProduct = () => {
   };
 
   const ProductTypeHandlar = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    updateStateWithValidation("productType", e.target.value, false, e.target.value === "Integrated");
+    updateStateWithValidation(
+      "productType",
+      e.target.value,
+      false,
+      e.target.value === "Integrated"
+    );
 
-    if(e.target.value === "Integrated") {
-        updateStateWithValidation("productPrice", state.productPrice.value, false, true);
+    if (e.target.value === "Integrated") {
+      updateStateWithValidation(
+        "productPrice",
+        state.productPrice.value,
+        false,
+        true
+      );
     } else {
-      updateStateWithValidation("productPrice", state.productPrice.value, false, false);
+      updateStateWithValidation(
+        "productPrice",
+        state.productPrice.value,
+        false,
+        false
+      );
     }
   };
-  //type represenet the name of the object element that i want to prosses
-  // paylod represent the info that i want to send
-
-  // if we compare the dispatch with a postnord transfer the packet represent the paylod the action is the transfare the address() is the type
-  // if we compare the dispatch with a postnord transfer the packet represent the paylod. the action type points to the place the reciever should take the package (payload)
 
   return (
     <>

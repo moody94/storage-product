@@ -17,6 +17,7 @@ import { AddIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 const ShowData = () => {
   const navigate = useNavigate();
+  // get all items
   const items = { ...localStorage };
   // let items = {"muhamed": "{}", "muhamed kheer": '{"productPrice":"11","productType":"Integrated"}'}
   let products = [];
@@ -31,7 +32,7 @@ const ShowData = () => {
         productName: key,
         productValue: parsedValue,
       };
-
+      // array of products objects[{}]
       products.push(productObject);
     } catch (error) {
       console.error(`Error parsing JSON for key ${key}:`);

@@ -11,14 +11,12 @@ const validateInput = (
   name: string,
   value: string,
   mode: boolean,
-  isIntegrated: boolean,
+  isIntegrated: boolean
 ): ValidationResults => {
   const itemExists = localStorage.getItem(value);
   let hasError = false,
     error = "";
 
-    // console.log('parseInt(value.trim())', parseInt(value.trim()))
-    // console.log('isIntegrated', isIntegrated)
   switch (name) {
     case "productName":
       if (value.trim() === "") {
@@ -42,9 +40,15 @@ const validateInput = (
       } else if (!/^\d+$/.test(value)) {
         hasError = true;
         error = "Invalid price. Use digits only";
-      } else if (parseInt(value.trim()) < 1500 && isIntegrated) {
-        hasError = true
-        error = "Price should be higher than 1500 when product type is integrated";
+      } else if (
+        (parseInt(value.trim()) < 1000 && isIntegrated) ||
+        (parseInt(value.trim()) > 2500 && isIntegrated)
+      ) {
+        hasError = true;
+        error = "Price should be between 1000 and 2500";
+      } else if (parseInt(value.trim()) === 0) {
+        hasError = true;
+        error = "Price chould be higher that 0";
       } else {
         hasError = false;
         error = "";

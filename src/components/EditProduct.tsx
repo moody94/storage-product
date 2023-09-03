@@ -15,29 +15,40 @@ import {
 import validateInput from "../utils/validateInput";
 export const Editproduct = "/editproduct/:productName";
 import {
-  UPDATE_FORM,
   FormState,
-  UpdateFormAction,
   LocalStorageItems,
   FormField,
 } from "../types/platfromsTypes";
-import ProductsFormContext from "../utils/productsFormContext";
+import {
+  initialState,
+  ProductsFormContext,
+  ProductsFormContextType,
+} from "../utils/ProductsFormContextPage";
+
 
 const EditProduct = () => {
   const navigate = useNavigate();
 
   //   useparams is an react router hook get all the parameters values
   //   this state came from reducer
-  const { productName } = useParams<{ productName?: any }>();
-  const { state, updateStateWithValidation } = useContext(ProductsFormContext);
+  const { productName } = useParams<{ productName: any }>();
+
+  const { state, updateStateWithValidation, setState } =
+    useContext<ProductsFormContextType>(ProductsFormContext);
 
   const [showError, setShowError] = useState(false);
   const storageData = localStorage.getItem(productName);
   //   const [editProduct, setEditProduct] = useState<LocalStorageItems>(
   //     JSON.parse(localStorage.getItem(productName))
   //   );
-  const editProduct: LocalStorageItems =
-    typeof storageData === "string" ? JSON.parse(storageData) : Any;
+  const editProduct: LocalStorageItems = (() => {
+    try {
+      return typeof storageData === "string" ? JSON.parse(storageData) : null;
+    } catch (error) {
+      console.error("Error parsing JSON:", error);
+      return null;
+    }
+  })();
 
   //   we used useEffect to fill the state with  product data from local storag if user does not fill in the forms
   useEffect(() => {
@@ -91,12 +102,7 @@ const EditProduct = () => {
     if (!isFormValid) {
       setShowError(true);
     } else {
-      updateStateWithValidation(
-        "isFormValid",
-        true,
-        true,
-        state.productType.value === "Integrated"
-      );
+      setState(initialState);
       localStorage.setItem(
         productName,
         JSON.stringify({
@@ -130,10 +136,20 @@ const EditProduct = () => {
       e.target.value === "Integrated"
     );
 
-    if(e.target.value === "Integrated") {
-        updateStateWithValidation("productPrice", state.productPrice.value, true, true);
+    if (e.target.value === "Integrated") {
+      updateStateWithValidation(
+        "productPrice",
+        state.productPrice.value,
+        true,
+        true
+      );
     } else {
-      updateStateWithValidation("productPrice", state.productPrice.value, true, false);
+      updateStateWithValidation(
+        "productPrice",
+        state.productPrice.value,
+        true,
+        false
+      );
     }
   };
 
