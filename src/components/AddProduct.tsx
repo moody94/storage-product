@@ -54,6 +54,7 @@ const AddProduct = () => {
     if (!isFormValid) {
       setShowError(true);
     } else {
+      // the initialState values after the validations
       setState(initialState);
 
       // the storage is object the key is productname and the value is object from type and price
@@ -97,7 +98,7 @@ const AddProduct = () => {
       false,
       e.target.value === "Integrated"
     );
-
+    // if the type is integraged
     if (e.target.value === "Integrated") {
       updateStateWithValidation(
         "productPrice",
@@ -164,6 +165,7 @@ const AddProduct = () => {
         <Button
           onClick={() => {
             navigate("/");
+            setState(initialState)
           }}
         >
           Cancle <NotAllowedIcon />

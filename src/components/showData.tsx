@@ -7,14 +7,13 @@ import {
   Table,
   Thead,
   Tbody,
-  Text,
   Tr,
   Th,
   Td,
   Center,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
-import { useState } from "react";
+
 const ShowData = () => {
   const navigate = useNavigate();
   // get all items
@@ -60,7 +59,7 @@ const ShowData = () => {
               </Thead>
               {products.length === 0 && (
                 <Center fontSize="4xl" p={100} ml={350}>
-                  There are no items to show
+                  There are no products to show
                 </Center>
               )}
               <Tbody>

@@ -25,7 +25,6 @@ import {
   ProductsFormContextType,
 } from "../utils/ProductsFormContextPage";
 
-
 const EditProduct = () => {
   const navigate = useNavigate();
 
@@ -50,15 +49,11 @@ const EditProduct = () => {
     }
   })();
 
-  //   we used useEffect to fill the state with  product data from local storag if user does not fill in the forms
+  //   we used useEffect to fill the state with product data from local storag if user does not fill in the forms
+
   useEffect(() => {
     if (state.productName.value == "") {
-      updateStateWithValidation(
-        "productName",
-        productName,
-        true,
-        editProduct?.productPrice === "Integrated"
-      );
+      updateStateWithValidation("productName", productName, true, false);
     }
     if (state.productPrice.value == "") {
       updateStateWithValidation(
@@ -73,7 +68,7 @@ const EditProduct = () => {
         "productType",
         editProduct?.productType,
         true,
-        editProduct?.productPrice === "Integrated"
+        false
       );
     }
   }, [editProduct]);
@@ -86,8 +81,7 @@ const EditProduct = () => {
     for (const name in state) {
       const item = state[name as keyof FormState];
       const { value } = item as FormField;
-      // ?????????
-      const { hasError, error } = validateInput(
+      const { hasError } = validateInput(
         name,
         value,
         true,
@@ -102,7 +96,6 @@ const EditProduct = () => {
     if (!isFormValid) {
       setShowError(true);
     } else {
-      setState(initialState);
       localStorage.setItem(
         productName,
         JSON.stringify({
@@ -110,6 +103,7 @@ const EditProduct = () => {
           productType: state.productType.value,
         })
       );
+      setState(initialState);
       navigate("/");
     }
 
@@ -210,6 +204,7 @@ const EditProduct = () => {
           onClick={() => {
             localStorage.removeItem(productName);
             navigate("/");
+            setState(initialState);
           }}
         >
           Delete <DeleteIcon />
